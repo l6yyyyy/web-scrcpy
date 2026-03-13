@@ -25,7 +25,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装依赖
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # 复制应用代码
 COPY . .
@@ -42,4 +42,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # 启动应用
 CMD ["npm", "start"]
+
 
