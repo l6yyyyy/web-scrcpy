@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  web-scrcpy:
+    build: .
+    container_name: web-scrcpy
+    restart: unless-stopped
+    
+    # 网络模式: 使用 host 模式以便访问局域网中的 Android 设备
+    # 飞牛NAS推荐使用 host 模式
+    network_mode: host
+    
+    # 或者使用桥接模式并映射端口(如果 host 模式不可用)
+    # ports:
+    #   - "3000:3000"
+    
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # 时区设置
+      - TZ=Asia/Shanghai
+    
+    volumes:
+      # 配置文件目录
+      - ./config:/app/config
+      # 截图缓存目录
+      - ./screenshots:/app/screenshots
+      # 临时文件目录
+      - ./tmp:/app/tmp
+    
+    # 设备访问权限(如果需要USB设备访问)
+    # devices:
+    #   - /dev/bus/usb:/dev/bus/usb
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+    
+    # 特权模式(某些情况下可能需要)
+    # privileged: true
